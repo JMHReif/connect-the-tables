@@ -1,0 +1,27 @@
+= Connect the Tables: How to Graph Relational Databases
+
+This is the repository containing resources accompanying the Graphing Relational Databases project with Neo4j (graph database) and MariaDB (relational database).
+
+== Project background
+
+In this project, we will see how to translate part or all data from a relational format into a graph. Goals of this project include the following:
+
+1. Learn the basics of migrating the model and practical steps for actually implementing it.
+2. Understand naming and case conventions when migrating from tables to graphs, as well as some principles for a successful graph model.
+3. Get concrete steps for graphing relational databases.
+
+== Presentation
+
+PDF versions of accompanying presentations are published to SpeakerDeck.
+
+* https://speakerdeck.com/jmhreif/connect-the-tables-how-to-graph-relational-databases[Devnexus (April 2024)^]
+
+== Related projects
+* Code repository: https://github.com/JMHReif/graphing-relational-dbs-data-import[Database setup and data import scripts^]
+
+== Resources
+* Modeling (Arrows): https://arrows.app/[arrows.app^]
+* Guide: https://neo4j.com/docs/getting-started/cypher-intro/cypher-sql/[SQL / Cypher^]
+* Blog post: https://dzone.com/articles/do-we-need-data-normalization-anymore[Do We Need Data Normalization Anymore?^]
+* Naming conventions: https://brainstation.io/learn/sql/naming-conventions[SQL^]
+* Naming conventions: https://neo4j.com/docs/cypher-manual/current/syntax/naming/[Neo4j^]

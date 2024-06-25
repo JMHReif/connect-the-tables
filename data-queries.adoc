@@ -1,0 +1,113 @@
+= SQL versus Cypher - Coffee Shop Example
+
+== Example 1 - Find products
+
+[source,sql]
+----
+SELECT * FROM product LIMIT 10;
+----
+
+[source,cypher]
+----
+MATCH (p:Product) RETURN p LIMIT 10;
+----
+
+== Example 2 - Find staff working in each building
+
+[source,sql]
+----
+SELECT b.building_id, b.building_type, b.street_address, b.city
+	s.staff_id, s.first_name, s.last_name, s.position
+FROM building b, staff s
+WHERE CAST(s.building_id AS INTEGER) = b.building_id;
+----
+
+[source,cypher]
+----
+MATCH (b:Building)<-[r:WORKS_IN]-(s:Staff)
+RETURN *;
+----
+
+== Example 3 - Find orders a staff member sold
+
+[source,sql]
+----
+SELECT s.staff_id, s.first_name, s.last_name,
+	o.transaction_id, o.transaction_date, o.transaction_time
+FROM staff s, coffee_order o
+WHERE s.staff_id = 13
+AND o.staff_id = s.staff_id
+LIMIT 10;
+----
+
+[source,cypher]
+----
+MATCH (s:Staff {staffId: 13})-[r:SOLD]->(o:Order)
+RETURN *
+LIMIT 10;
+----
+
+== Example 4 - Find products on an order
+
+[source,sql]
+----
+SELECT o.transaction_id, o.transaction_date, o.transaction_time, 
+	ol.product_id,
+	p.product_name, p.product_description
+FROM coffee_order o
+INNER JOIN order_line_item ol ON o.transaction_id = ol.transaction_id
+AND o.transaction_date = ol.transaction_date
+AND o.transaction_time = ol.transaction_time
+INNER JOIN product p ON p.product_id = ol.product_id
+LIMIT 50;
+----
+
+[source,cypher]
+----
+MATCH (o:Order)-[r:CONTAINS]->(p:Product)
+RETURN o, r, p
+LIMIT 50;
+----
+
+== Example 5 - Find seasonal drink products
+
+[source,sql]
+----
+SELECT t.product_type,
+p.product_name
+FROM product_type t, 
+product p
+WHERE t.product_type = "Seasonal drink"
+AND p.type_id = t.type_id;
+----
+
+[source,cypher]
+----
+MATCH (t:Type {type: "Seasonal drink"})<-[r:SORTED_BY]-(p:Product)
+RETURN *;
+----
+
+== Example 6 - Find customers purchased > 1 latte
+
+[source,sql]
+----
+SELECT c.customer_id, c.customer_name,
+COUNT(p.product_name)
+FROM customer c
+INNER JOIN coffee_order o ON c.customer_id = o.customer_id
+INNER JOIN order_line_item ol ON o.transaction_id = ol.transaction_id
+AND o.transaction_date = ol.transaction_date
+AND o.transaction_time = ol.transaction_time
+INNER JOIN product p ON p.product_id = ol.product_id
+WHERE p.product_name = "Latte"
+GROUP BY c.customer_id
+HAVING COUNT(p.product_name) > 1 ORDER BY COUNT(p.product_name) DESC;
+----
+
+[source,cypher]
+----
+MATCH (c:Customer)-[r:BOUGHT]->(o:Order)-[r2:CONTAINS]->(p:Product {productName: "Latte"})
+WITH c, COUNT(p) as numberOrdered
+WHERE numberOrdered > 1
+RETURN c.customerId, c.name, numberOrderedORDER BY numberOrdered DESC;
+----
