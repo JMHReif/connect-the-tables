@@ -1,0 +1,30 @@
+= Run Graphing Relational Databases Demo
+
+== Steps
+
+1. Start Docker Desktop!
+2. Start mymaria container
+3. Start myneo4j container
+
+[source,shell]
+----
+docker start mymaria
+docker start myneo4j
+----
+
+== SSH into containers and open query cli tools
+
+.MariaDB
+[source,shell]
+----
+docker exec -it mymaria bash
+mariadb -u<username> -p<password>
+use coffee_shop
+----
+
+.Neo4j
+[source,shell]
+----
+docker exec -it myneo4j bash
+cypher-shell -u<username> -p<password>
+----

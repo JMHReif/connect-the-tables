@@ -24,11 +24,32 @@ WHERE CAST(s.building_id AS INTEGER) = b.building_id;
 
 [source,cypher]
 ----
+MATCH (b:Building)<-[r]-(s:Staff)
+RETURN *;
+
+//Alternate
+//MATCH (b:Building)<-[r:WORKS_IN|MANAGES]-(s:Staff)
+//RETURN *;
+----
+
+== Example 3 - Find staff (who are NOT managers) working in each building
+
+[source,sql]
+----
+SELECT b.building_id, b.building_type, b.street_address, b.city, 
+	s.staff_id, s.first_name, s.last_name, s.position 
+FROM building b, staff s 
+WHERE CAST(s.building_id AS INTEGER) = b.building_id
+AND s.staff_id <> b.manager_staff_id;
+----
+
+[source,cypher]
+----
 MATCH (b:Building)<-[r:WORKS_IN]-(s:Staff)
 RETURN *;
 ----
 
-== Example 3 - Find orders a staff member sold
+== Example 4 - Find orders a staff member sold
 
 [source,sql]
 ----
@@ -47,7 +68,7 @@ RETURN *
 LIMIT 10;
 ----
 
-== Example 4 - Find products on an order
+== Example 5 - Find products on an order
 
 [source,sql]
 ----
@@ -69,7 +90,7 @@ RETURN o, r, p
 LIMIT 50;
 ----
 
-== Example 5 - Find seasonal drink products
+== Example 6 - Find seasonal drink products
 
 [source,sql]
 ----
@@ -87,27 +108,29 @@ MATCH (t:Type {type: "Seasonal drink"})<-[r:SORTED_BY]-(p:Product)
 RETURN *;
 ----
 
-== Example 6 - Find customers purchased > 1 latte
+== Example 7 - Find customers purchased > 1 latte
 
 [source,sql]
 ----
 SELECT c.customer_id, c.customer_name,
-COUNT(p.product_name)
+COUNT(p.product_name) as number_ordered
 FROM customer c
 INNER JOIN coffee_order o ON c.customer_id = o.customer_id
 INNER JOIN order_line_item ol ON o.transaction_id = ol.transaction_id
 AND o.transaction_date = ol.transaction_date
 AND o.transaction_time = ol.transaction_time
 INNER JOIN product p ON p.product_id = ol.product_id
-WHERE p.product_name = "Latte"
+WHERE p.product_name = “Latte”
 GROUP BY c.customer_id
-HAVING COUNT(p.product_name) > 1 ORDER BY COUNT(p.product_name) DESC;
+HAVING number_ordered > 1
+ORDER BY number_ordered DESC;
 ----
 
 [source,cypher]
 ----
-MATCH (c:Customer)-[r:BOUGHT]->(o:Order)-[r2:CONTAINS]->(p:Product {productName: "Latte"})
+MATCH (c:Customer)-[r:BOUGHT]->(o:Order)-[r2:CONTAINS]->(p:Product {productName: “Latte”})
 WITH c, COUNT(p) as numberOrdered
 WHERE numberOrdered > 1
-RETURN c.customerId, c.name, numberOrderedORDER BY numberOrdered DESC;
+RETURN c.customerId, c.name, numberOrdered
+ORDER BY numberOrdered DESC;
 ----
