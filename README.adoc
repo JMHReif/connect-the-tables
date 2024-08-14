@@ -14,6 +14,7 @@ In this project, we will see how to translate part or all data from a relational
 
 PDF versions of accompanying presentations are published to SpeakerDeck.
 
+* https://speakerdeck.com/jmhreif/connect-the-tables-how-to-graph-relational-databases-9b14924b-9871-4272-b834-7ebee70add06[THAT Conference (July 2024)^]
 * https://speakerdeck.com/jmhreif/connect-the-tables-how-to-graph-relational-databases-b744940b-0ad9-47e8-91f2-d99633a5aca0[KCDC (June 2024)^]
 * https://speakerdeck.com/jmhreif/connect-the-tables-how-to-graph-relational-databases[Devnexus (April 2024)^]
 
